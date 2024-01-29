@@ -6,6 +6,8 @@ yojijukugo test Rust library
 Usage:
 
 ```rust
+use yoji::Yojijukugo;
+
 fn main() {
     let jigo: Yojijukugo = "自業自得 じ ごう じ とく".parse().unwrap();
     println!("to_string: {}", jigo.to_string());
