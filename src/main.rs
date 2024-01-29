@@ -10,7 +10,10 @@ struct Part {
 
 impl Part {
     fn new(kanji: char, reading: impl Into<String>) -> Part {
-        Part { kanji, reading:reading.into() }
+        Part {
+            kanji,
+            reading: reading.into(),
+        }
     }
 }
 
@@ -35,51 +38,64 @@ impl fmt::Display for Yojijukugo {
     }
 }
 
-fn line_to_yoji(line: String) -> Yojijukugo {
-    let mut split = line.split(' ');
-    // let text: &str = split.next().unwrap();
-    let result = split.next().unwrap()
-        .chars()
-        .zip(split)
-        .map(|(kanji, reading)| Part::new(kanji, reading));
+impl std::str::FromStr for Yojijukugo {
+    type Err = String;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut split = s.split(' ');
+        // let text: &str = split.next().unwrap();
+        let result = split
+            .next()
+            .unwrap()
+            .chars()
+            .zip(split)
+            .map(|(kanji, reading)| Part::new(kanji, reading));
 
-    let (a, b, c, d) = result.into_iter().collect_tuple().unwrap();
-    Yojijukugo(a, b, c, d)
+        let (a, b, c, d) = result.into_iter().collect_tuple().unwrap();
+        Ok(Yojijukugo(a, b, c, d))
+    }
 }
 
 fn main() {
-    let a = line_to_yoji("自業自得 じ ごう じ とく".to_string());
+    let a: Yojijukugo = "自業自得 じ ごう じ とく".parse().unwrap();
     println!("{a}");
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::line_to_yoji;
     use crate::{Part, Yojijukugo};
 
     fn jigo() -> Yojijukugo {
         Yojijukugo(
-            Part::new('自', String::from("じ")),
-            Part::new('業', String::from("ごう")),
-            Part::new('自', String::from("じ")),
-            Part::new('得', String::from("とく")),
+            Part {
+                kanji: '自',
+                reading: String::from("じ"),
+            },
+            Part {
+                kanji: '業',
+                reading: String::from("ごう"),
+            },
+            Part {
+                kanji: '自',
+                reading: String::from("じ"),
+            },
+            Part {
+                kanji: '得',
+                reading: String::from("とく"),
+            },
         )
     }
 
     #[test]
     fn can_parse() {
         let expected: Yojijukugo = jigo();
-        assert_eq!(
-            line_to_yoji("自業自得 じ ごう じ とく".to_string()),
-            expected
-        );
+        assert_eq!("自業自得 じ ごう じ とく".parse(), Ok(expected));
     }
 
     #[test]
     #[should_panic]
     fn cannot_parse() {
         let expected: Yojijukugo = jigo();
-        assert_eq!(line_to_yoji("自業自得 じ ごう じ".to_string()), expected);
+        assert_eq!("自業自得 じ ごう じ".parse(), Ok(expected));
     }
 
     #[test]
