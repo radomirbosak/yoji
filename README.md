@@ -13,3 +13,11 @@ fn main() {
     println!("kana: {}", jigo.kana());
 }
 ```
+
+output:
+
+```
+to_string: 自(じ)業(ごう)自(じ)得(とく)
+kanji: 自業自得
+kana: じごうじとく
+```
