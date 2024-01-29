@@ -38,19 +38,24 @@ impl fmt::Display for Yojijukugo {
     }
 }
 
+#[derive(Debug, PartialEq)]
+struct ParseYojijukugoError;
+
 impl std::str::FromStr for Yojijukugo {
-    type Err = String;
+    type Err = ParseYojijukugoError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut split = s.split(' ');
-        // let text: &str = split.next().unwrap();
         let result = split
             .next()
-            .unwrap()
+            .ok_or(ParseYojijukugoError)?
             .chars()
             .zip(split)
             .map(|(kanji, reading)| Part::new(kanji, reading));
 
-        let (a, b, c, d) = result.into_iter().collect_tuple().unwrap();
+        let (a, b, c, d) = result
+            .into_iter()
+            .collect_tuple()
+            .ok_or(ParseYojijukugoError)?;
         Ok(Yojijukugo(a, b, c, d))
     }
 }
