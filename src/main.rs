@@ -1,15 +1,16 @@
-use std::fs::read_to_string;
+use itertools::Itertools;
 use std::fmt;
+// use std::fs::read_to_string;
 
-#[derive(Default,PartialEq)]
+#[derive(Default, PartialEq)]
 struct Part {
     kanji: char,
     reading: String,
 }
 
 impl Part {
-    fn new(kanji: char, reading: String) -> Part {
-        Part { kanji, reading }
+    fn new(kanji: char, reading: impl Into<String>) -> Part {
+        Part { kanji, reading:reading.into() }
     }
 }
 
@@ -25,7 +26,7 @@ impl fmt::Display for Part {
     }
 }
 
-#[derive(Default,Debug,PartialEq)]
+#[derive(Default, Debug, PartialEq)]
 struct Yojijukugo(Part, Part, Part, Part);
 
 impl fmt::Display for Yojijukugo {
@@ -34,50 +35,21 @@ impl fmt::Display for Yojijukugo {
     }
 }
 
-
 fn line_to_yoji(line: String) -> Yojijukugo {
-    let mut split = line.split(" ");
-    let text: String = split.next().unwrap().to_owned();
-    let mut result: Vec<Part> = vec![];
-    if let (Some(one), Some(two), Some(three), Some(four)) = (split.next(), split.next(), split.next(), split.next()) {
-        for (kanji, reading) in text.chars().zip([one, two, three, four]) {
-            println!("sdsdd");
-            println!("{kanji}: {reading}");
-            let p = Part::new(kanji, reading.to_owned());
-            result.push(p);
-        }
-    } else {
-        panic!("as");
-    }
-    // Yojijukugo(result.pop().unwrap(), result.pop().unwrap(), result.pop().unwrap(), result.pop().unwrap())
+    let mut split = line.split(' ');
+    // let text: &str = split.next().unwrap();
+    let result = split.next().unwrap()
+        .chars()
+        .zip(split)
+        .map(|(kanji, reading)| Part::new(kanji, reading));
 
-    // match 
-    Yojijukugo(result.remove(0), result.remove(0), result.remove(0), result.remove(0))
-
-    // match 
-
-
-
-    // Default::default()
+    let (a, b, c, d) = result.into_iter().collect_tuple().unwrap();
+    Yojijukugo(a, b, c, d)
 }
 
 fn main() {
-    line_to_yoji("自業自得 じ ごう じ とく".to_string());
-    // let content = read_to_string("path").expect("Could not read file.");
-    // println!("Content: {}", content);
-    // let line_iter = content.lines();
-    // for line in line_iter {
-    //     println!("{}", line);
-    //     let mut parts_iter = line.split(' ');
-    //     let kanji = parts_iter.next().unwrap();
-    //     let readings: Vec<&str> = parts_iter.collect();
-    //     println!("Kanji: {}", kanji);
-    //     println!("Readings: {:?}", readings);
-
-    //     for (a,b) in kanji.chars().zip(readings) {
-    //         println!("{}: {}", a, b);
-    //     }
-    // }
+    let a = line_to_yoji("自業自得 じ ごう じ とく".to_string());
+    println!("{a}");
 }
 
 #[cfg(test)]
@@ -107,10 +79,7 @@ mod tests {
     #[should_panic]
     fn cannot_parse() {
         let expected: Yojijukugo = jigo();
-        assert_eq!(
-            line_to_yoji("自業自得 じ ごう じ".to_string()),
-            expected
-        );
+        assert_eq!(line_to_yoji("自業自得 じ ごう じ".to_string()), expected);
     }
 
     #[test]
