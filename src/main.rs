@@ -82,8 +82,10 @@ impl std::str::FromStr for Yojijukugo {
 }
 
 fn main() {
-    let a: Yojijukugo = "自業自得 じ ごう じ とく".parse().unwrap();
-    println!("{a}");
+    let jigo: Yojijukugo = "自業自得 じ ごう じ とく".parse().unwrap();
+    println!("to_string: {}", jigo.to_string());
+    println!("kanji: {}", jigo.kanji());
+    println!("kana: {}", jigo.kana());
 }
 
 #[cfg(test)]
