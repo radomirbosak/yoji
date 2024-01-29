@@ -5,4 +5,6 @@ fn main() {
     println!("to_string: {}", jigo.to_string());
     println!("kanji: {}", jigo.kanji());
     println!("kana: {}", jigo.kana());
+    println!("kanji_kana: {}", jigo.kanji_kana());
+    println!("kana_kanji: {}", jigo.kana_kanji());
 }

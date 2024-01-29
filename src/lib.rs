@@ -45,6 +45,18 @@ impl Yojijukugo {
             &self.0.reading, &self.1.reading, &self.2.reading, &self.3.reading
         )
     }
+    pub fn kanji_kana(&self) -> String {
+        format!(
+            "{}{}{}{}",
+            &self.0.kanji, &self.1.kanji, &self.2.reading, &self.3.reading
+        )
+    }
+    pub fn kana_kanji(&self) -> String {
+        format!(
+            "{}{}{}{}",
+            &self.0.reading, &self.1.reading, &self.2.kanji, &self.3.kanji
+        )
+    }
 }
 
 impl fmt::Display for Yojijukugo {
