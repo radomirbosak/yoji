@@ -30,38 +30,38 @@ impl fmt::Display for Part {
 }
 
 #[derive(Default, Debug, PartialEq)]
-pub struct Yojijukugo(Part, Part, Part, Part);
+pub struct Yojijukugo([Part; 4]);
 
 impl Yojijukugo {
     pub fn kanji(&self) -> String {
         format!(
             "{}{}{}{}",
-            &self.0.kanji, &self.1.kanji, &self.2.kanji, &self.3.kanji
+            &self.0[0].kanji, &self.0[1].kanji, &self.0[2].kanji, &self.0[3].kanji
         )
     }
     pub fn kana(&self) -> String {
         format!(
             "{}{}{}{}",
-            &self.0.reading, &self.1.reading, &self.2.reading, &self.3.reading
+            &self.0[0].reading, &self.0[1].reading, &self.0[2].reading, &self.0[3].reading
         )
     }
     pub fn kanji_kana(&self) -> String {
         format!(
             "{}{}{}{}",
-            &self.0.kanji, &self.1.kanji, &self.2.reading, &self.3.reading
+            &self.0[0].kanji, &self.0[1].kanji, &self.0[2].reading, &self.0[3].reading
         )
     }
     pub fn kana_kanji(&self) -> String {
         format!(
             "{}{}{}{}",
-            &self.0.reading, &self.1.reading, &self.2.kanji, &self.3.kanji
+            &self.0[0].reading, &self.0[1].reading, &self.0[2].kanji, &self.0[3].kanji
         )
     }
 }
 
 impl fmt::Display for Yojijukugo {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}{}{}{}", self.0, self.1, self.2, self.3)
+        write!(f, "{}{}{}{}", self.0[0], self.0[1], self.0[2], self.0[3])
     }
 }
 
@@ -78,23 +78,17 @@ impl std::str::FromStr for Yojijukugo {
         let readings = split;
 
         // zip these iterators and map into a Part struct
-        let result = kanji_chars
+        let parts: Vec<Part> = kanji_chars
             .zip(readings)
-            .map(|(kanji, reading)| Part::new(kanji, reading));
+            .map(|(kanji, reading)| Part::new(kanji, reading))
+            .collect();
 
-        // collect the kanji parts into a 4-tuple
-        let (a, b, c, d) = result
-            .into_iter()
-            .collect_tuple()
-            .ok_or(ParseYojijukugoError)?;
-
-        // construct yojijukugo from tuple
-        Ok(Yojijukugo(a, b, c, d))
+        Ok(Yojijukugo(parts.try_into().or(Err(ParseYojijukugoError))?))
     }
 }
 
 pub fn get_sample1234() -> Yojijukugo {
-    Yojijukugo(
+    Yojijukugo([
         Part {
             kanji: '一',
             reading: String::from("いち"),
@@ -111,5 +105,5 @@ pub fn get_sample1234() -> Yojijukugo {
             kanji: '四',
             reading: String::from("し"),
         },
-    )
+    ])
 }
