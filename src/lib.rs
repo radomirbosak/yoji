@@ -1,6 +1,4 @@
-use itertools::Itertools;
 use std::fmt;
-// use std::fs::read_to_string;
 
 #[derive(Default, PartialEq)]
 pub struct Part {
