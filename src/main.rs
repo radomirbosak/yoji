@@ -1,10 +1,21 @@
+use std::fs::read_to_string;
 use yoji::Yojijukugo;
 
+fn read_db(filename: &str) -> Vec<Yojijukugo> {
+    let mut result: Vec<Yojijukugo> = Vec::new();
+
+    for line in read_to_string(filename).unwrap().lines() {
+        result.push(line.parse().unwrap())
+    }
+    result
+}
+
 fn main() {
-    let jigo: Yojijukugo = "自業自得 じ ごう じ とく".parse().unwrap();
-    println!("to_string: {}", jigo.to_string());
-    println!("kanji: {}", jigo.kanji());
-    println!("kana: {}", jigo.kana());
-    println!("kanji_kana: {}", jigo.kanji_kana());
-    println!("kana_kanji: {}", jigo.kana_kanji());
+    let filename = "path";
+    println!("Reading database from {filename}");
+    let db = read_db(filename);
+    println!("Found {} entries:", db.len());
+    for yoji in db {
+        println!("{yoji}");
+    }
 }
