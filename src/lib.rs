@@ -4,8 +4,8 @@ use std::fmt;
 
 #[derive(Default, PartialEq)]
 pub struct Part {
-    pub kanji: char,
-    pub reading: String,
+    kanji: char,
+    reading: String,
 }
 
 impl Part {
@@ -30,7 +30,7 @@ impl fmt::Display for Part {
 }
 
 #[derive(Default, Debug, PartialEq)]
-pub struct Yojijukugo(pub Part, pub Part, pub Part, pub Part);
+pub struct Yojijukugo(Part, Part, Part, Part);
 
 impl Yojijukugo {
     pub fn kanji(&self) -> String {
@@ -91,4 +91,25 @@ impl std::str::FromStr for Yojijukugo {
         // construct yojijukugo from tuple
         Ok(Yojijukugo(a, b, c, d))
     }
+}
+
+pub fn get_sample1234() -> Yojijukugo {
+    Yojijukugo(
+        Part {
+            kanji: '一',
+            reading: String::from("いち"),
+        },
+        Part {
+            kanji: '二',
+            reading: String::from("に"),
+        },
+        Part {
+            kanji: '三',
+            reading: String::from("さん"),
+        },
+        Part {
+            kanji: '四',
+            reading: String::from("し"),
+        },
+    )
 }

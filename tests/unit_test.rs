@@ -1,52 +1,31 @@
 #[cfg(test)]
 mod tests {
-    use yoji::{Part, Yojijukugo};
-
-    fn jigo() -> Yojijukugo {
-        Yojijukugo(
-            Part {
-                kanji: '自',
-                reading: String::from("じ"),
-            },
-            Part {
-                kanji: '業',
-                reading: String::from("ごう"),
-            },
-            Part {
-                kanji: '自',
-                reading: String::from("じ"),
-            },
-            Part {
-                kanji: '得',
-                reading: String::from("とく"),
-            },
-        )
-    }
+    use yoji::{get_sample1234, Yojijukugo};
 
     #[test]
     fn can_parse() {
-        let expected: Yojijukugo = jigo();
-        assert_eq!("自業自得 じ ごう じ とく".parse(), Ok(expected));
+        let expected: Yojijukugo = get_sample1234();
+        assert_eq!("一二三四 いち に さん し".parse(), Ok(expected));
     }
 
     #[test]
     #[should_panic]
     fn cannot_parse() {
-        let expected: Yojijukugo = jigo();
-        assert_eq!("自業自得 じ ごう じ".parse(), Ok(expected));
+        let expected: Yojijukugo = get_sample1234();
+        assert_eq!("一二三四 いち に さん".parse(), Ok(expected));
     }
 
     #[test]
     fn can_represent() {
-        assert_eq!(jigo().to_string(), "自(じ)業(ごう)自(じ)得(とく)");
+        assert_eq!(get_sample1234().to_string(), "一(いち)二(に)三(さん)四(し)");
     }
 
     #[test]
     fn kanji_method() {
-        assert_eq!(jigo().kanji(), "自業自得");
+        assert_eq!(get_sample1234().kanji(), "一二三四");
     }
     #[test]
     fn kana_method() {
-        assert_eq!(jigo().kana(), "じごうじとく");
+        assert_eq!(get_sample1234().kana(), "いちにさんし");
     }
 }
