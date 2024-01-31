@@ -69,7 +69,7 @@ pub struct ParseYojijukugoError;
 impl std::str::FromStr for Yojijukugo {
     type Err = ParseYojijukugoError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut split = s.split(' ');
+        let mut split = s.split([' ', '　']);
 
         // get iterators for kanji chars, and their readings
         let kanji_chars = split.next().ok_or(ParseYojijukugoError)?.chars();
